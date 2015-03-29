@@ -6,7 +6,7 @@ using System.Text;
 using System.Web.Configuration;
 using AntsCode.Util;
 
-namespace BatchService
+namespace Waika.BatchService
 {
     public class WebService : IWebService
     {

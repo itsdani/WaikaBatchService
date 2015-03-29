@@ -7,7 +7,7 @@
     <ProjectGuid>{084BE84E-1A9A-4F5C-B73C-66005E0AF5C1}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BusinessLogic</RootNamespace>
+    <RootNamespace>Waika.BusinessLogic</RootNamespace>
     <AssemblyName>BusinessLogic</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,6 +35,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BatchHandler.cs" />
     <Compile Include="IBatchHandler.cs" />
   </ItemGroup>
   <ItemGroup>

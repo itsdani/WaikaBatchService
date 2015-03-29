@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace BusinessLogic
+namespace Waika.BusinessLogic
 {
     public interface IBatchHandler
     {

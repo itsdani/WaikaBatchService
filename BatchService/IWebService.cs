@@ -3,7 +3,7 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-namespace BatchService
+namespace Waika.BatchService
 {
     [ServiceContract]
     public interface IWebService
