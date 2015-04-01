@@ -28,15 +28,12 @@ namespace Waika.BatchService
             return result;
         }
 
-        public string UploadCsv(Stream stream)
+        public string UploadCsv(Stream stream, string apiKey)
         {
-            var apiKey = WebConfigurationManager.AppSettings["defaultapikey"];
-            if (WebOperationContext.Current == null) throw new WebFaultException(HttpStatusCode.InternalServerError);
-            if (WebOperationContext.Current.IncomingRequest.Headers["Api-Key"] != null)
+            if (apiKey == null)
             {
-                apiKey = WebOperationContext.Current.IncomingRequest.Headers["Api-Key"];
+                apiKey = WebConfigurationManager.AppSettings["defaultapikey"];
             }
-
             string result = null;
             try
             {
@@ -49,7 +46,5 @@ namespace Waika.BatchService
 
             return result;
         }
-
-        
     }
 }

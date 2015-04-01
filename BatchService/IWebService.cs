@@ -16,7 +16,7 @@ namespace Waika.BatchService
         [WebInvoke(
             Method = WebRequestMethods.Http.Post,
             BodyStyle = WebMessageBodyStyle.Bare,
-            UriTemplate = "/UploadCsv")]
-        string UploadCsv(Stream stream);
+            UriTemplate = "/UploadCsv?api_key={apiKey}")]
+        string UploadCsv(Stream stream, string apiKey);
     }
 }
