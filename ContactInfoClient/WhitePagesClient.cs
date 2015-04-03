@@ -71,6 +71,48 @@ namespace Waika.ContactInfoClient
             return isPersonFound;
         }
 
+
+        private bool TryPhoneUpdate(ContactInfo contactInfo, string apiKey)
+        {
+            bool isPersonFound = false;
+            var request = new RestRequest("phone.json", Method.GET);
+            request.AddParameter("api_key", apiKey);
+            request.AddParameter("phone_number", contactInfo.PhoneNumber);
+
+            var response = Client.Execute(request);
+            JObject jObject = JObject.Parse(response.Content);
+            dynamic data = jObject;
+
+            if (data.results.Count == 1 && data.results[0].belongs_to.Count>0)
+            {
+                isPersonFound = true;
+                FillAllDataFromPerson(contactInfo, data.results[0].belongs_to[0]);
+                FillAddressFromPhone(contactInfo, data.results[0]);
+            }
+
+            return isPersonFound;
+        }
+
+        private bool TryFullAddressUpdate(ContactInfo contactInfo, string apiKey)
+        {
+            bool isPersonFound = false;
+            var request = new RestRequest("location.json", Method.GET);
+            request.AddParameter("api_key", apiKey);
+            request.AddParameter("address", contactInfo.Address);
+
+            var response = Client.Execute(request);
+            JObject jObject = JObject.Parse(response.Content);
+            dynamic data = jObject;
+
+            if (data.results.Count == 1 && data.results[0].legal_entities_at.Count > 0)
+            {
+                isPersonFound = true;
+                FillAllDataFromPerson(contactInfo, data.results[0].legal_entities_at[0]);
+            }
+
+            return isPersonFound;
+        }
+
         private void FillAllDataFromPerson(ContactInfo contactInfo, dynamic person)
         {
             if (String.IsNullOrWhiteSpace(contactInfo.Name))
@@ -160,45 +202,48 @@ namespace Waika.ContactInfoClient
             }
         }
 
-        private bool TryPhoneUpdate(ContactInfo contactInfo, string apiKey)
+        private void FillAddressFromPhone(ContactInfo contactInfo, dynamic phone)
         {
-            bool isPersonFound = false;
-            var request = new RestRequest("phone.json", Method.GET);
-            request.AddParameter("api_key", apiKey);
-            request.AddParameter("phone_number", contactInfo.PhoneNumber);
-
-            var response = Client.Execute(request);
-            JObject jObject = JObject.Parse(response.Content);
-            dynamic data = jObject;
-
-            if (data.results.Count == 1 && data.results[0].belongs_to.Count>0)
+            if (String.IsNullOrWhiteSpace(contactInfo.Address))
             {
-                isPersonFound = true;
-                FillAllDataFromPerson(contactInfo, data.results[0].belongs_to[0]);
+                try
+                {
+                    contactInfo.Address = phone.best_location.address;
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
-
-            return isPersonFound;
-        }
-
-        private bool TryFullAddressUpdate(ContactInfo contactInfo, string apiKey)
-        {
-            bool isPersonFound = false;
-            var request = new RestRequest("location.json", Method.GET);
-            request.AddParameter("api_key", apiKey);
-            request.AddParameter("address", contactInfo.Address);
-
-            var response = Client.Execute(request);
-            JObject jObject = JObject.Parse(response.Content);
-            dynamic data = jObject;
-
-            if (data.results.Count == 1 && data.results[0].legal_entities_at.Count > 0)
+            if (String.IsNullOrWhiteSpace(contactInfo.City))
             {
-                isPersonFound = true;
-                FillAllDataFromPerson(contactInfo, data.results[0].legal_entities_at[0]);
+                try
+                {
+                    contactInfo.City = phone.best_location.city;
+                }
+                catch (InvalidOperationException)
+                {
+                }
             }
-
-            return isPersonFound;
+            if (String.IsNullOrWhiteSpace(contactInfo.State))
+            {
+                try
+                {
+                    contactInfo.State = phone.best_location.state_code;
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
+            if (String.IsNullOrWhiteSpace(contactInfo.Zip))
+            {
+                try
+                {
+                    contactInfo.Zip = phone.best_location.postal_code;
+                }
+                catch (InvalidOperationException)
+                {
+                }
+            }
         }
-
     }
 }
