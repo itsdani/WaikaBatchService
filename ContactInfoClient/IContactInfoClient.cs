@@ -4,6 +4,6 @@ namespace Waika.ContactInfoClient
 {
     public interface IContactInfoClient
     {
-        ContactInfo FillOutContactInfo(ContactInfo requestInfo, string apiKey);
+        bool FillOutContactInfo(ContactInfo contactInfo, string apiKey);
     }
 }
