@@ -101,7 +101,23 @@ namespace Waika.Model
 
         public string ToCsv()
         {
-            throw new NotImplementedException();
+            TextWriter textWriter = new StringWriter();
+            var csv = new CsvWriter(textWriter);
+            foreach (var column in HeaderOrder)
+            {
+                csv.WriteField(column.ToString());
+            }
+            csv.NextRecord();
+            foreach (var contact in Contacts)
+            {
+                foreach (var column in HeaderOrder)
+                {
+                    csv.WriteField(contact.GetFieldByColumn(column));
+                }
+                csv.NextRecord();
+            }
+
+            return textWriter.ToString();
         }
     }
 }

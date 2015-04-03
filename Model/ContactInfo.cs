@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Waika.Model
 {
@@ -96,6 +93,33 @@ namespace Waika.Model
             set
             {
                 _zip = String.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            }
+        }
+
+        public string GetFieldByColumn(Columns column)
+        {
+            switch (column)
+            {
+                case Columns.Address:
+                    return Address;
+                    break;
+                case Columns.City:
+                    return City;
+                    break;
+                case Columns.Name:
+                    return Name;
+                    break;
+                case Columns.PhoneNumber:
+                    return PhoneNumber;
+                    break;
+                case Columns.State:
+                    return State;
+                    break;
+                case Columns.Zip:
+                    return Zip;
+                    break;
+                default:
+                    return null;
             }
         }
     }

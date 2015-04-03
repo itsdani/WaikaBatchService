@@ -1,10 +1,8 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Threading;
 using AntsCode.Util;
-using Waika.ContactInfoClient;
 using Waika.Model;
 
 namespace Waika.BusinessLogic
@@ -22,12 +20,6 @@ namespace Waika.BusinessLogic
             processorThread = new Thread(_batchProcessor.Run);
             processorThread.Start();
         }
-
-        //~BatchHandler()
-        //{
-        //    processorThread.Abort();
-        //    processorThread.Join(500);
-        //}
 
         public string AddBatch(Stream csvFileStream, string apiKey)
         {
