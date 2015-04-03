@@ -1,64 +1,64 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using AntsCode.Util;
+using Waika.ContactInfoClient;
+using Waika.Model;
 
 namespace Waika.BusinessLogic
 {
     public class BatchHandler : IBatchHandler
     {
-        private static string Dir;
+        private readonly string _dir;
+        private readonly BatchProcessor _batchProcessor;
+        private Thread processorThread;
 
         public BatchHandler()
         {
-            Dir = Path.Combine(Directory.GetCurrentDirectory(), ConfigurationManager.AppSettings["storagepath"]);
+            _dir = Path.Combine(Directory.GetCurrentDirectory(), ConfigurationManager.AppSettings["storagepath"]);
+            _batchProcessor = new BatchProcessor();
+            processorThread = new Thread(_batchProcessor.Run);
+            processorThread.Start();
         }
 
-        public string AddBatch(Stream batchStream, string apiKey)
+        //~BatchHandler()
+        //{
+        //    processorThread.Abort();
+        //    processorThread.Join(500);
+        //}
+
+        public string AddBatch(Stream csvFileStream, string apiKey)
         {
-            var guid = Guid.NewGuid();
-            var parser = new MultipartParser(batchStream);
-            var path = Path.Combine(Dir, guid + ".csv");
+            var contentString = GetContentString(csvFileStream);
+            var batch = new ContactBatch(contentString, apiKey);
+            _batchProcessor.BatchQueue.Enqueue(batch);
             
-            if (parser.Success)
-            {
-                var contentString = Encoding.Default.GetString(parser.FileContents);
-                SaveFile(path, contentString);
-            }
-            else
-            {
-                throw new InvalidDataException();
-            }
-            return guid.ToString();
+            return batch.Id.ToString();
         }
 
         public Stream GetContactInfo(string id)
         {
             var filename = id + ".csv";
-            var path = Path.Combine(Dir, filename);
+            var path = Path.Combine(_dir, filename);
             if (!File.Exists(path))
                 throw new FileNotFoundException();
             
             return File.OpenRead(path);
         }
 
-        private static void SaveFile(string path, string fileContents)
+        private static string GetContentString(Stream batchStream)
         {
-            CreateDirectoryIfNotExists(path);
-            File.WriteAllText(path, fileContents);
-        }
+            var parser = new MultipartParser(batchStream);
 
-        private static void CreateDirectoryIfNotExists(string filePath)
-        {
-            var directory = new FileInfo(filePath).Directory;
-            if (directory == null) throw new Exception("Directory could not be determined for the filePath");
+            if (!parser.Success)
+            {
+                throw new FileLoadException();
+            }
 
-            Directory.CreateDirectory(directory.FullName);
+            var contentString = Encoding.Default.GetString(parser.FileContents);
+            return contentString;
         }
     }
 }
