@@ -4,7 +4,7 @@ namespace Waika.BusinessLogic
 {
     public interface IBatchHandler
     {
-        string AddBatch(Stream batchStream, string apiKey);
+        string AddBatch(Stream csvFileStream, string apiKey);
         Stream GetContactInfo(string id);
     }
 }
