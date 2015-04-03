@@ -83,6 +83,16 @@ namespace Waika.ContactInfoClient
                 {
                 }
             }
+            if (String.IsNullOrWhiteSpace(contactInfo.Name))
+            {
+                try
+                {
+                    contactInfo.Name = person.name;
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                }
+            }
             if (String.IsNullOrWhiteSpace(contactInfo.Address))
             {
                 try
@@ -90,6 +100,9 @@ namespace Waika.ContactInfoClient
                     contactInfo.Address = person.locations[0].address;
                 }
                 catch (ArgumentOutOfRangeException)
+                {
+                }
+                catch (InvalidOperationException)
                 {
                 }
             }
@@ -102,6 +115,9 @@ namespace Waika.ContactInfoClient
                 catch (ArgumentOutOfRangeException)
                 {
                 }
+                catch (InvalidOperationException)
+                {
+                }
             }
             if (String.IsNullOrWhiteSpace(contactInfo.State))
             {
@@ -110,6 +126,9 @@ namespace Waika.ContactInfoClient
                     contactInfo.State = person.locations[0].state_code;
                 }
                 catch (ArgumentOutOfRangeException)
+                {
+                }
+                catch (InvalidOperationException)
                 {
                 }
             }
@@ -122,6 +141,9 @@ namespace Waika.ContactInfoClient
                 catch (ArgumentOutOfRangeException)
                 {
                 }
+                catch (InvalidOperationException)
+                {
+                }
             }
             if (String.IsNullOrWhiteSpace(contactInfo.PhoneNumber))
             {
@@ -130,6 +152,9 @@ namespace Waika.ContactInfoClient
                     contactInfo.PhoneNumber = person.phones[0].phone_number;
                 }
                 catch (ArgumentOutOfRangeException)
+                {
+                }
+                catch (InvalidOperationException)
                 {
                 }
             }
