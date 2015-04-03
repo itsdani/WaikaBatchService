@@ -9,6 +9,7 @@ namespace Waika.Model
     public class ContactBatch
     {
         private List<ContactInfo> _contacts;
+        public Dictionary<Columns, string> OriginalHeaders = new Dictionary<Columns, string>(); 
 
         public List<ContactInfo> Contacts
         {
@@ -55,7 +56,7 @@ namespace Waika.Model
             }
         }
 
-        private static List<Columns> GetHeaderOrder(string[] header)
+        private List<Columns> GetHeaderOrder(string[] header)
         {
             var options = new List<FuzzyStringComparisonOptions>
             {
@@ -88,6 +89,8 @@ namespace Waika.Model
                             throw new InvalidDataException("Wrong header names");
                         }
                         headerOrder.Add((Columns)column);
+                        OriginalHeaders.Add((Columns)column, headerName);
+
                         matchFound = true;
                     }
                 }
@@ -105,7 +108,7 @@ namespace Waika.Model
             var csv = new CsvWriter(textWriter);
             foreach (var column in HeaderOrder)
             {
-                csv.WriteField(column.ToString());
+                csv.WriteField(OriginalHeaders[column].Trim());
             }
             csv.NextRecord();
             foreach (var contact in Contacts)
