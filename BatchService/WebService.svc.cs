@@ -39,9 +39,14 @@ namespace Waika.BatchService
             {
                 result = BatchHandler.AddBatch(stream, apiKey);
             }
-            catch (Exception)
+            catch (InvalidDataException)
             {
-                throw new WebFaultException<string>("The posted file was not recognised.", HttpStatusCode.UnsupportedMediaType);
+                throw new WebFaultException<string>("Error in the csv file", HttpStatusCode.BadRequest);
+            }
+            catch (FileLoadException)
+            {
+                throw new WebFaultException<string>("The posted file was not recognised.",
+                    HttpStatusCode.BadRequest);
             }
 
             return result;
