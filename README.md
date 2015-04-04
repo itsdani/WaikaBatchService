@@ -15,7 +15,7 @@ Submitting csv files:
 
 `POST /UploadCsv?api_key={apiKey}`
 
-You have to upload a csv file (stream) with the requests, the service returns 
+You have to upload a csv file with the request, the service returns 
 an ID which can be used to download the updated csv.
 
 Downloading updated csv files:
